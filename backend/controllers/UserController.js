@@ -2,8 +2,9 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
-
-
+const Token = require("../models/tokenModel")
+const crypto = require("crypto");
+const sendEmail = require("../utills/sendEmail");
 //  Generate Token\
 
 const generateToken = (id) => {
@@ -204,7 +205,7 @@ const updateUser = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id)
 
     if (user) {
-        const {name, email, photo, phone, bio } = user;
+        const { name, email, photo, phone, bio } = user;
         user.email = email;
         user.name = req.body.name || name;
         user.phone = req.body.phone || phone;
@@ -222,7 +223,7 @@ const updateUser = asyncHandler(async (req, res) => {
             bio: updateduser.bio,
         })
 
-    }else{
+    } else {
         res.status(404)
         throw new Error("User not found")
     }
@@ -230,6 +231,140 @@ const updateUser = asyncHandler(async (req, res) => {
 
 
 });
+// Change password
+const changePassword = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    const { oldPassword, password } = req.body
+    // validate
+    if (!user) {
+        res.status(400)
+        throw new Error("User not found, please signup")
+    }
+    if (!oldPassword || !password) {
+        res.status(400)
+        throw new Error("Please add old and new password")
+    }
+    // check if old password matches the given password in the DB 
+    const passwordIsCorrect = await bcrypt.compare(oldPassword, user.password)
+
+    // save new password
+    if (user && passwordIsCorrect) {
+        user.password = password
+        await user.save()
+        res.status(200).send("Password Change successful")
+
+    } else {
+        res.status(400)
+        throw new Error("Old Password is  incorrect ")
+    }
+
+})
+
+const forgotpassword = asyncHandler(async (req, res) => {
+    const { email } = req.body
+    const user = await User.findOne({ email })
+    if (!user) {
+        res.status(404)
+        throw new Error("User does not exists")
+    }
+    // Delete Token if it exists in DB
+    let token = await Token.findOne({userId: user._id})
+    if(token){
+        await token.deleteOne()
+    }
+
+
+    // Create reset Token
+    let resetToken = crypto.randomBytes(32).toString("hex") + user._id
+    console.log(resetToken);
+    //Hash Token before saving to DB
+
+    const hashedToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex")
+    
+    // Save token to DB
+
+    await new Token({
+        userId: user._id,
+        token: hashedToken,
+        createdAt: Date.now(),
+        expiresAt: Date.now() + 30 *(60*1000) // Thirty minutes
+    }).save()
+
+
+    // Construct Reset URL
+    const resetUrl = `${process.env.FRONTEND_URL}/resetpassword/${resetToken}`
+
+    // Reset Email
+
+    const message = `
+        <h2> Hello ${user.name} </h2>
+        <p>Please user the url below to reset your password</p>
+        <p> This reset link is valid for only 30minutes.</p>
+
+
+        <a href =${resetUrl} clicktracking=off>${resetUrl}</a>
+        <p>Regards..</p>
+        <p>ShyApp Team</p>
+    `;
+    const subject = "Password Reset Request"
+    const send_to = user.email
+    const send_from= process.env.EMAIL_USER
+
+    try {
+        await sendEmail(subject, message,send_to,send_from)
+        res.status(200).json({
+            success: true,
+            message: "Reset Eamil Sent"
+        })
+    } catch (error) {
+        res.status(500)
+        throw new Error ("Email not send, Please try again")
+    }
+
+
+})
+
+// Reset Password 
+
+const resetPassword = asyncHandler(async (req,res) => {
+    
+    const {password } = req.body
+    const{resetToken} = req.params
+
+    // Hash token , then compare to token in DB
+
+    const hashedToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex")
+
+    // Find token in DB
+
+    const userToken = await Token.findOne({
+        token: hashedToken,
+        expiresAt:{$gt:Date.now()}
+
+    })
+    if(!userToken){
+        res.status(404)
+        throw new Error ("Invalid or expired Token")
+    }
+    // Find user
+
+    const user = await User.findOne({_id:userToken.userId})
+    user.password = password
+    await user.save()
+
+    res.status(200).json({
+        message: "Password reset successful, Please Login"
+    })
+
+
+})
+
 
 module.exports = {
     registerUser,
@@ -238,5 +373,8 @@ module.exports = {
     getUser,
     loginStatus,
     updateUser,
+    changePassword,
+    forgotpassword,
+    resetPassword,
 
 };
