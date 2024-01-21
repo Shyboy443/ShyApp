@@ -24,7 +24,7 @@ const Sidebar = ({ children }) => {
                         <RiProductHuntLine size={35} style={{ cursor: "pointer" }} onClick={goHome} />
                     </div>
 
-                    <div className='bars' style={{ marginLeft: isOpen ? "100px" : "0px" }}>
+                    <div className='bars' style={{ marginLeft: isOpen ? "140px" : "0px" }}>
                         <HiMenuAlt3 onClick={toggle} />
 
                     </div>
