@@ -15,6 +15,8 @@ import { useEffect } from "react";
 import { getLoginStatus } from "./services/authService";
 import { SET_LOGIN } from "./redux/features/auth/authSlice";
 import AddProduct from "./pages/addProduct/AddProduct";
+import ProductDetails from "./components/product/productDetails/ProductDetails";
+import EditProduct from "./pages/editProduct/EditProduct";
 
 
 
@@ -64,6 +66,30 @@ function App() {
           
             <Layout>
               <AddProduct />
+
+            </Layout>
+            </Sidebar>
+
+      
+      }/>
+      <Route path="/product-detail/:id" element = {
+          <Sidebar>
+
+          
+            <Layout>
+              <ProductDetails/>
+
+            </Layout>
+            </Sidebar>
+
+      
+      }/>
+      <Route path="/edit-product/:id" element = {
+          <Sidebar>
+
+          
+            <Layout>
+              <EditProduct/>
 
             </Layout>
             </Sidebar>

@@ -7,6 +7,10 @@ import Search from '../../search/Search'
 import { useDispatch, useSelector } from "react-redux"
 import { FILTER_PRODUCTS, selectFilteredProducts } from '../../../redux/features/product/filterSlice'
 import ReactPaginate from 'react-paginate';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import { deleteProducts, getProducts } from '../../../redux/features/product/ProductSlice'
+import { Link } from 'react-router-dom'
 
 
 
@@ -25,6 +29,31 @@ const ProductList = ({ products, isLoading }) => {
         }
         return text
     }
+
+   const delProduct =  async(id) => {
+    await dispatch(deleteProducts(id))
+    await dispatch(getProducts())
+
+   } 
+
+    const confirmDelete = (id) => {
+
+        confirmAlert({
+            title: 'Delete Product ',
+            message: 'Are you sure you want to delete this product?',
+            buttons: [
+                {
+                    label: 'Delete',
+                    onClick: () => delProduct(id)
+                },
+                {
+                    label: 'Cancel',
+                  //  onClick: () => alert('Click No')
+                }
+            ]
+        });
+    }
+
 
 
     // Begin Pagination
@@ -105,13 +134,18 @@ const ProductList = ({ products, isLoading }) => {
                                                 <td>{"$"}{price * quantity}</td>
                                                 <td className='icons'>
                                                     <span>
+                                                        <Link to={`/product-detail/${_id}`}>
                                                         <AiOutlineEye size={25} color={"purple"} />
+                                                        </Link>
+                                                        
                                                     </span>
                                                     <span>
+                                                    <Link to={`/edit-product/${_id}`}>
                                                         <FaEdit size={20} color={"green"} />
+                                                        </Link>
                                                     </span>
                                                     <span>
-                                                        <FaTrashAlt size={20} color={"red"} />
+                                                        <FaTrashAlt size={20} color={"red"} onClick={ () => confirmDelete(_id)} />
                                                     </span>
                                                 </td>
                                             </tr>
