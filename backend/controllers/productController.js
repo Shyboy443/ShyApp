@@ -20,6 +20,7 @@ const  createProduct = asyncHandler(async (req,res) => {
     let fileData = {};
     if(req.file){
 
+      
         // Save Image to cloudinary
 
         let uploadedFile;
@@ -33,6 +34,7 @@ const  createProduct = asyncHandler(async (req,res) => {
             throw new Error("Image could not be uploaded")
         }
 
+      
 
         fileData = {
             fileName: req.file.originalname, 
@@ -40,6 +42,9 @@ const  createProduct = asyncHandler(async (req,res) => {
             fileType: req.file.mimetype, 
             fileSize: fileSizeFormatter(req.file.size,2) ,
         }
+
+      
+
     }
 
 

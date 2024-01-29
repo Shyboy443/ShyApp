@@ -10,6 +10,9 @@ import { SpinnerImg } from '../../loader/Loader'
 import DOMPurify from "dompurify"
 
 
+
+
+
 const ProductDetails = () => {
   useRedirectLoggedOutUser("/login")
   const dispatch = useDispatch()

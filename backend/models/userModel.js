@@ -27,7 +27,7 @@ const UserSchema = mongoose.Schema({
     photo: {
         type: String ,
         required:[true,"Please add a photo"],
-        default: "https://ibb.co/CByHFmQ"
+        default: "https://res.cloudinary.com/dtsnjgmkq/image/upload/v1705905353/ShyApp1/f8lbg9anknnui0xiahsx.png"
     },
     phone: {
         type: String ,

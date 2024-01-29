@@ -31,7 +31,7 @@ const Sidebar = ({ children }) => {
 
                 </div>
                 {menu.map((item,index ) => {
-                    return <Sidebaritem key = {index} item = {item} isOpen= {isOpen}/>
+                    return <Sidebaritem key= {index} item = {item} isOpen= {isOpen}/>
                 })}
 
 
