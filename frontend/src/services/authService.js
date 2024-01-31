@@ -148,3 +148,18 @@ export const updateUser = async (formData) => {
   }
 };
 
+// Change Password
+export const changePassword = async (formData) => {
+  try {
+    const response = await axios.patch(`http://localhost:2000/api/users/changepassword`,formData);
+    return response.data
+
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    toast.error(message);
+  }
+};
+

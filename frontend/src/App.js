@@ -19,6 +19,7 @@ import ProductDetails from "./components/product/productDetails/ProductDetails";
 import EditProduct from "./pages/editProduct/EditProduct";
 import Profile from "./pages/profile/Profile";
 import EditProfile from "./pages/profile/EditProfile";
+import Contact from "./pages/contact/Contact";
 
 
 
@@ -116,6 +117,18 @@ function App() {
           
             <Layout>
               <EditProfile/>
+
+            </Layout>
+            </Sidebar>
+
+      
+      }/>
+      <Route path="/contact-us" element = {
+          <Sidebar>
+
+          
+            <Layout>
+              <Contact/>
 
             </Layout>
             </Sidebar>

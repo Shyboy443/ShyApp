@@ -1,10 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
+let storedName;
 
-const name = JSON.parse(localStorage.getItem("name"));
+try {
+  const localStorageValue = localStorage.getItem("name");
+
+  // Check if the value is not null or undefined before parsing
+  storedName = localStorageValue ? JSON.parse(localStorageValue) : "";
+} catch (error) {
+  console.error("Error parsing 'name' from localStorage:", error);
+  storedName = "";
+}
 
 const initialState = {
   isLoggedIn: false,
-  name: name ? name : "",
+  name: storedName,
   user: {
     name: "",
     email: "",
@@ -13,6 +22,7 @@ const initialState = {
     photo: "",
   },
 };
+
 
 const authSlice = createSlice({
   name: "auth",
