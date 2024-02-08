@@ -35,10 +35,16 @@ const ChangePassword = () => {
             oldPassword,
             password
         }
-       const data =  await changePassword(formData)
+    
+
+        const data =  await changePassword(formData)
+        
         toast.success(data)
-        navigate("/profile")
+       navigate("/profile")
+      
+   
       }
+
     
 
 

@@ -123,7 +123,6 @@ const ProductSlice = createSlice({
             products.map((item) => {
               const {price, quantity} = item 
               const productValue = price * quantity 
-              console.log(productValue);
               return array.push(productValue)
             })
             const totalValue = array.reduce((a,b) => {
@@ -167,7 +166,6 @@ const ProductSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.isError = false
-                console.log(action.payload);
                 state.products.push(action.payload)
                 toast.success("Product added Succesfully")
             })
@@ -184,7 +182,6 @@ const ProductSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.isError = false
-                console.log(action.payload);
                 state.products = action.payload
               
             })

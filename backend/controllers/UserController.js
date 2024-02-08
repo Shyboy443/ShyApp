@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs")
 const Token = require("../models/tokenModel")
 const crypto = require("crypto");
 const sendEmail = require("../utills/sendEmail");
+const verifytiwliotoken = require("../utills/sendSms");
 //  Generate Token\
 
 const generateToken = (id) => {
@@ -48,7 +49,6 @@ const registerUser = asyncHandler(async (req, res) => {
         email,
         password,
     })
-
 
     //Generate Token
     const token = generateToken(user._id)
@@ -147,6 +147,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const logout = asyncHandler(async (req, res) => {
 
+    
     res.cookie("token", "", {
         path: "/",
         httpOnly: true,
@@ -252,6 +253,7 @@ const changePassword = asyncHandler(async (req, res) => {
         user.password = password
         await user.save()
         res.status(200).send("Password Change successful")
+        
 
     } else {
         res.status(400)

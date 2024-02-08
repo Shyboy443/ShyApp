@@ -47,19 +47,22 @@ const EditProfile = () => {
       const saveProfile = async(e) => {
         e.preventDefault()
         setIsLoading(true)
-      
+
+  // Check the Type and notify the user
+      if(profileImage){ 
         if (
           !(
             profileImage.type === "image/jpeg" ||
             profileImage.type === "image/jpg" ||
             profileImage.type === "image/png"
-          )
+          ) 
         ) {
           
           toast.error("Please Enter a Valid Photo Type ")
           setIsLoading(false)
           return 
         }
+      }
         
       
         try {
